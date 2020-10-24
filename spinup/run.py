@@ -53,8 +53,12 @@ def parse_and_execute_grid_search(cmd, args):
         print('\n\nUsing default backend (%s) for %s.\n'%(backend, cmd))
         cmd = cmd + '_' + backend
 
+<<<<<<< HEAD
     print(f"hesy log: cmd here in run.parse_and_execute_grid_search is :\n\t{cmd} ")
     algo = eval('spinup.'+cmd) # TODO 这里为啥要用eval...在python解释器里面会直接执行是么...
+=======
+    algo = eval('spinup.'+cmd)
+>>>>>>> temp
 
     # Before all else, check to see if any of the flags is 'help'.
     valid_help = ['--help', '-h', 'help']
@@ -79,8 +83,13 @@ def parse_and_execute_grid_search(cmd, args):
     for i, arg in enumerate(args):
         assert i > 0 or '--' in arg, \
             friendly_err("You didn't specify a first flag.")
+<<<<<<< HEAD
         if '--' in arg: 
             arg_key = arg.lstrip('-') 
+=======
+        if '--' in arg:
+            arg_key = arg.lstrip('-')
+>>>>>>> temp
             arg_dict[arg_key] = []
         else:
             arg_dict[arg_key].append(process(arg))
@@ -183,6 +192,7 @@ def parse_and_execute_grid_search(cmd, args):
 
 if __name__ == '__main__':
     """
+<<<<<<< HEAD
         This is a wrapper allowing command-line interfaces to individual
         algorithms and the plot / test_policy utilities.
 
@@ -191,6 +201,16 @@ if __name__ == '__main__':
 
         For algorithms, it sets up an ExperimentGrid object and uses the
         ExperimentGrid run routine to execute each possible experiment.
+=======
+    This is a wrapper allowing command-line interfaces to individual
+    algorithms and the plot / test_policy utilities.
+
+    For utilities, it only checks which thing to run, and calls the
+    appropriate file, passing all arguments through.
+
+    For algorithms, it sets up an ExperimentGrid object and uses the
+    ExperimentGrid run routine to execute each possible experiment.
+>>>>>>> temp
     """
 
     cmd = sys.argv[1] if len(sys.argv) > 1 else 'help'
@@ -198,7 +218,11 @@ if __name__ == '__main__':
     valid_utils = ['plot', 'test_policy']
     valid_help = ['--help', '-h', 'help']
     valid_cmds = valid_algos + valid_utils + valid_help
+<<<<<<< HEAD
     assert cmd in valid_cmds, \ 
+=======
+    assert cmd in valid_cmds, \
+>>>>>>> temp
         "Select an algorithm or utility which is implemented in Spinning Up."
 
     if cmd in valid_help:
@@ -215,7 +239,11 @@ if __name__ == '__main__':
             """) + str_valid_cmds
         print(help_msg)
 
+<<<<<<< HEAD
         # Provide some useful details for algorithm running
+=======
+        # Provide some useful details for algorithm running.
+>>>>>>> temp
         subs_list = ['--' + k.ljust(10) + 'for'.ljust(10) + '--' + v \
                      for k,v in SUBSTITUTIONS.items()]
         str_valid_subs = '\n\t' + '\n\t'.join(subs_list)
@@ -241,10 +269,17 @@ if __name__ == '__main__':
         # Execute the correct utility file.
         runfile = osp.join(osp.abspath(osp.dirname(__file__)), 'utils', cmd +'.py')
         args = [sys.executable if sys.executable else 'python', runfile] + sys.argv[2:]
+<<<<<<< HEAD
         subprocess.check_call(args, env=os.environ) # 
+=======
+        subprocess.check_call(args, env=os.environ)
+>>>>>>> temp
     else:
         # Assume that the user plans to execute an algorithm. Run custom
         # parsing on the arguments and build a grid search to execute.
         args = sys.argv[2:]
         parse_and_execute_grid_search(cmd, args)
+<<<<<<< HEAD
 
+=======
+>>>>>>> temp

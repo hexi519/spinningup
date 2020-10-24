@@ -6,6 +6,7 @@ import numpy as np
 import gym
 from gym.spaces import Discrete, Box
 
+<<<<<<< HEAD
 
 def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
     # Build a feedforward neural network.
@@ -15,11 +16,21 @@ def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
         layers += [nn.Linear(sizes[j], sizes[j + 1]), act()]
     return nn.Sequential(*layers)
  
+=======
+def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
+    # Build a feedforward neural network.
+    layers = []
+    for j in range(len(sizes)-1):
+        act = activation if j < len(sizes)-2 else output_activation
+        layers += [nn.Linear(sizes[j], sizes[j+1]), act()]
+    return nn.Sequential(*layers)
+>>>>>>> temp
 
 def reward_to_go(rews):
     n = len(rews)
     rtgs = np.zeros_like(rews)
     for i in reversed(range(n)):
+<<<<<<< HEAD
         rtgs[i] = rews[i] + (rtgs[i + 1] iff i + 1 < n else 0)
     return rtgs
 
@@ -30,6 +41,13 @@ def train(env_name='CartPole-v0',
           epochs=50,
           batch_size=5000,
           render=False):
+=======
+        rtgs[i] = rews[i] + (rtgs[i+1] if i+1 < n else 0)
+    return rtgs
+
+def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2, 
+          epochs=50, batch_size=5000, render=False):
+>>>>>>> temp
 
     # make environment, check spaces, get obs / act dims
     env = gym.make(env_name)
@@ -42,7 +60,11 @@ def train(env_name='CartPole-v0',
     n_acts = env.action_space.n
 
     # make core of policy network
+<<<<<<< HEAD
     logits_net = mlp(sizes=[obs_dim] + hidden_sizes + [n_acts])
+=======
+    logits_net = mlp(sizes=[obs_dim]+hidden_sizes+[n_acts])
+>>>>>>> temp
 
     # make function to compute action distribution
     def get_policy(obs):
@@ -64,6 +86,7 @@ def train(env_name='CartPole-v0',
     # for training policy
     def train_one_epoch():
         # make some empty lists for logging.
+<<<<<<< HEAD
         batch_obs = []  # for observations
         batch_acts = []  # for actions
         batch_weights = []  # for reward-to-go weighting in policy gradient
@@ -74,17 +97,40 @@ def train(env_name='CartPole-v0',
         obs = env.reset()  # first obs comes from starting distribution
         done = False  # signal from environment that episode is over
         ep_rews = []  # list for rewards accrued throughout ep
+=======
+        batch_obs = []          # for observations
+        batch_acts = []         # for actions
+        batch_weights = []      # for reward-to-go weighting in policy gradient
+        batch_rets = []         # for measuring episode returns
+        batch_lens = []         # for measuring episode lengths
+
+        # reset episode-specific variables
+        obs = env.reset()       # first obs comes from starting distribution
+        done = False            # signal from environment that episode is over
+        ep_rews = []            # list for rewards accrued throughout ep
+>>>>>>> temp
 
         # render first episode of each epoch
         finished_rendering_this_epoch = False
 
         # collect experience by acting in the environment with current policy
         while True:
+<<<<<<< HEAD
             # rendering
             if (not finished_rendering_this_epoch) and render:
                 env.render()
             # save obs
             batch_obs.append(obs.copy())
+=======
+
+            # rendering
+            if (not finished_rendering_this_epoch) and render:
+                env.render()
+
+            # save obs
+            batch_obs.append(obs.copy())
+
+>>>>>>> temp
             # act in the environment
             act = get_action(torch.as_tensor(obs, dtype=torch.float32))
             obs, rew, done, _ = env.step(act)
@@ -114,12 +160,19 @@ def train(env_name='CartPole-v0',
 
         # take a single policy gradient update step
         optimizer.zero_grad()
+<<<<<<< HEAD
         batch_loss = compute_loss(obs=torch.as_tensor(batch_obs,
                                                       dtype=torch.float32),
                                   act=torch.as_tensor(batch_acts,
                                                       dtype=torch.int32),
                                   weights=torch.as_tensor(batch_weights,
                                                           dtype=torch.float32))
+=======
+        batch_loss = compute_loss(obs=torch.as_tensor(batch_obs, dtype=torch.float32),
+                                  act=torch.as_tensor(batch_acts, dtype=torch.int32),
+                                  weights=torch.as_tensor(batch_weights, dtype=torch.float32)
+                                  )
+>>>>>>> temp
         batch_loss.backward()
         optimizer.step()
         return batch_loss, batch_rets, batch_lens
@@ -127,9 +180,14 @@ def train(env_name='CartPole-v0',
     # training loop
     for i in range(epochs):
         batch_loss, batch_rets, batch_lens = train_one_epoch()
+<<<<<<< HEAD
         print('epoch: %3d \t loss: %.3f \t return: %.3f \t ep_len: %.3f' %
               (i, batch_loss, np.mean(batch_rets), np.mean(batch_lens)))
 
+=======
+        print('epoch: %3d \t loss: %.3f \t return: %.3f \t ep_len: %.3f'%
+                (i, batch_loss, np.mean(batch_rets), np.mean(batch_lens)))
+>>>>>>> temp
 
 if __name__ == '__main__':
     import argparse
